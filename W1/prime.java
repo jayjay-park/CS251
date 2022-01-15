@@ -22,6 +22,6 @@ public boolean isPrimeSixKSqrt(int n) {
             return false;
         }
     }
-    
+
     return true;
 }
