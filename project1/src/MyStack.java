@@ -4,9 +4,9 @@
  * <p>
  * TODO: Complete MyStack.
  *
- * @author , TODO: add your name here
- * @username , TODO: add your Purdue username here
- * @sources TODO: list your sources here
+ * @author , Jayjay Park
+ * @username , park1125
+ * @sources project1 handout
  */
 
 public class MyStack<Item> {
@@ -26,14 +26,17 @@ public class MyStack<Item> {
      * parameters to default values
      */
     public MyStack() {
-        //TODO implement MyStack
+        this.top = null;
+        this.size = 0;
     }
 
     /**
      * @return if the stack is empty or not
      */
     public boolean isEmpty() {
-        //TODO implement isEmpty
+        if (this.size == 0) {
+            return true;
+        }
         return false;
     }
 
@@ -44,7 +47,9 @@ public class MyStack<Item> {
      * @param value the value to be pushed
      */
     public void push(Item value) {
-        //TODO implement push
+        StackNode<Item> push = new StackNode<Item>(value, top);
+        this.top = push;
+        this.size += 1;
     }
 
     /**
