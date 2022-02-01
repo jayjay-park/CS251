@@ -4,9 +4,9 @@
  * <p>
  * TODO: Complete Expression.
  *
- * @author , TODO: add your name here
- * @username , TODO: add your Purdue username here
- * @sources TODO: list your sources here
+ * @author , Jayjay Park
+ * @username , park1125
+ * @sources project1 handout
  */
 
 

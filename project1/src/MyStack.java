@@ -60,8 +60,11 @@ public class MyStack<Item> {
      *                             You can throw an exception by “throw new EmptyStackException();”
      */
     public Item peek() throws EmptyStackException {
-        //TODO implement peek
-        return null;
+        if (this.size == 0) {
+            throw new EmptyStackException();
+        }
+
+        return this.top.value;
     }
 
     /**
@@ -73,16 +76,26 @@ public class MyStack<Item> {
      *                             You can throw an exception by “throw new EmptyStackException();”
      */
     public Item pop() throws EmptyStackException {
-        //TODO implement pop
-        return null;
+        if (this.size == 0) {
+            throw new EmptyStackException();
+        }
+
+        // save old top
+        StackNode<Item> popNode = this.top;
+        // update new top
+        this.top = this.top.next;
+        // update size
+        this.size += 1;
+
+        return popNode.value;
     }
 
     /**
      * @return the size of the stack
      */
     public int getSize() {
-        //TODO implement getSize
-        return Integer.MIN_VALUE;
+        
+        return this.size;
     }
 
 }
