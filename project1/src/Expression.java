@@ -37,8 +37,59 @@ public class Expression {
      * @return true if the expression is valid
      */
     public boolean isValid() {
-        //TODO: complete isValid
-        return false;
+        //check the input
+        System.out.println(this.expression);
+
+        char[] input =  this.expression.toCharArray();
+        int numOperators = 0;
+        int numBrackets = 0;
+        int numOperands = 0;
+
+        for (int i = 0; i < input.length; i++) {
+            // if operator
+            if (input[i] == '+' || input[i] == '-' || input[i] == '*' || input[i] == '/' || input[i] == '%') {
+                // expression should not start with operator
+                if (i == 0) {
+                    return false;
+                }
+
+                if ((i + 1) < input.length) {
+                    if (input[i+1] == '+'|| input[i+1] == '-' || input[i+1] == '*' || input[i+1] == '/' || input[i+1] == '%') {
+                        return false;
+                    }
+                }
+                numOperators++;
+            }
+            // if brackets
+            else if (input[i] == '(' || input[i] == ')') {
+                // edge case: ()
+                if ((i + 1) < input.length) {
+                    if (input[i] == '(' && input[i+1] == ')') {
+                        return false;
+                    }
+                }
+                numBrackets++;
+            }
+            // if operand
+            else if (input[i] >= 'a' && input[i] <= 'z') {
+                // edge case: aa
+                if ((i + 1) < input.length) {
+                    if (input[i+1] >= 'a' && input[i+1] <= 'z') {
+                        return false;
+                    }
+                }
+                numOperands++;
+            }
+        }
+
+        if ((numBrackets % 2) != 0) {
+            return false;
+        }
+        if (numOperands != (numOperators + 1)) {
+            return false;
+        }
+
+        return true;
     }
 
     /**

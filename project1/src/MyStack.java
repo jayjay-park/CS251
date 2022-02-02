@@ -85,7 +85,7 @@ public class MyStack<Item> {
         // update new top
         this.top = this.top.next;
         // update size
-        this.size += 1;
+        this.size -= 1;
 
         return popNode.value;
     }
