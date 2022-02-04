@@ -1,3 +1,5 @@
+import javax.security.auth.kerberos.KerberosCredMessage;
+
 /**
  * CS 251: Data Structures and Algorithms
  * Project 1
@@ -98,7 +100,103 @@ public class Expression {
      * @return the root of the expression tree
      */
     public TreeNode makeTree() {
-        //TODO complete makeTree
+
+        MyStack<TreeNode> operator = new MyStack<TreeNode>();
+        MyStack<TreeNode> operand = new MyStack<TreeNode>();
+
+        char[] input =  this.expression.toCharArray();
+        TreeNode root = new TreeNode();
+        TreeNode leftNode = new TreeNode();
+        TreeNode rightNode = new TreeNode();
+
+        System.out.printf("----- New Expression: %s -----\n", this.expression);
+
+        for (int i = 0; i < input.length; i++) {
+            // 1. VARIABLE to Operand Stack
+            if (input[i] >= 'a' && input[i] <= 'z') {
+                operand.push(new TreeNode(input[i]));
+
+                char currentTop = '\0';
+                try{
+                    currentTop = operand.peek().value;
+                } catch (Exception e) {
+                    System.out.println("Error1\n");
+                }
+                System.out.printf("VARIABLE top: %c\n", currentTop);
+            }
+            // 2. ( or OPERATOR to Operator Stack
+            else if (input[i] == '(' || input[i] == '+' || input[i] == '-' ||
+                     input[i] == '*' || input[i] == '/' || input[i] == '%') {
+                operator.push(new TreeNode(input[i]));
+
+                char currentTop = '\0';
+                try{
+                    currentTop = operator.peek().value;
+                } catch (Exception e) {
+                    System.out.println("Error2\n");
+                }
+                System.out.printf("OPERATOR top: %c\n", currentTop);
+            }
+            // 3. )
+            if (input[i] == ')') {
+                try {
+                    // 3-2-1. pop operator
+                    root = operator.pop();
+                    System.out.printf("Operator popped: %c\n", root.value);
+                } catch (Exception e) {
+                    System.out.printf("Error3.1\n");
+                }
+                // 3-2. If top TreeNode of operator is not '('
+                while (root.value != '(') {
+                    try {
+                            // 3-2-2. pop two operands
+                            rightNode = operand.pop();
+                            root.right = rightNode;
+                            leftNode = operand.pop();
+                            root.left = leftNode;
+                            System.out.printf("Operand right: %c\n", root.right.value);
+                            System.out.printf("Operand left: %c\n", root.left.value);
+                            operand.push(root);
+                            root = operator.pop();
+
+                    } catch (Exception e) {
+                        System.out.println("Error5!\n");
+                    }
+                }
+            } 
+        }
+
+        int count = operator.getSize();
+
+        try {
+            root = operator.pop();
+        } catch (Exception e) {
+            System.out.println("Error6\n");
+        }
+
+            for (int k = 0; k < count; k++) {
+                try {
+                    rightNode = operand.pop();
+                    root.right = rightNode;
+                    leftNode = operand.pop();
+                    root.left = leftNode;
+                    System.out.printf("Operand right1: %c\n", root.right.value);
+                    System.out.printf("Operand left1: %c\n", root.left.value);
+                    operand.push(root);
+                    root = operator.pop();
+                } catch (Exception e) {
+                    System.out.println("Error7\n");
+                }
+            }
+        
+
+
+        System.out.printf("previous root : %c\n", root.value);
+        try {
+            return operand.pop();
+        } catch (Exception e) {
+            System.out.println("Error8\n");
+        }
         return null;
     }
 
@@ -111,8 +209,34 @@ public class Expression {
      * @return the value of the evaluated expression
      */
     public int evaluate(TreeNode root, int[] values) {
-        //TODO complete evaluate
-        return Integer.MIN_VALUE;
+        // base case
+        if (root == null) {
+            return 0;
+        }
+        
+        if (root.left == null && root.right == null) {
+            // System.out.printf("index of %c: %d\n", root.value, 0 + (root.value - 'a'));
+            System.out.printf("leaf: %c\n", root.value);
+            return values[0 + (root.value - 'a')];
+        }
+
+        
+        int leftChild = evaluate(root.left, values);
+        
+        
+        int rightChild = evaluate(root.right, values);
+        
+        //function: current node must be operator cause that is all that is left after
+        
+        switch (root.value) {
+            case '+': return leftChild + rightChild;
+            case '-': return leftChild - rightChild;
+            case '*': return leftChild * rightChild;
+            case '/': return leftChild/ rightChild;
+            case '%': return leftChild % rightChild;
+        }
+        
+        return -1;
     }
 
     /**
