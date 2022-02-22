@@ -166,8 +166,18 @@ public class Expression {
             return val;
 
         } else {
-            char x = root.value;
-            return values[x - 'a'];
+            // if E or M
+            if (root.value == 'E') {
+                return values[27];
+            }
+            else if (root.value == 'M'){
+                return values[28];
+            }
+            else {  // if a-z
+                char x = root.value;
+                return values[x - 'a'];
+            }
+            
         }
     }
 

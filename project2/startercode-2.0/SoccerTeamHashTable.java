@@ -39,10 +39,13 @@ public class SoccerTeamHashTable {
      * for a given name, it will return an expression to calculate the hash value.
      *
      * @param name
-     * @return
+     * @return expression to calculate the hash value
      */
     public String getExpression(String name) {
-        //TODO implement getExpression
+        
+        for (char ch : name.toCharArray()) {
+            String s = ch + "%" + "M";
+        }
         return "";
     }
 
