@@ -168,10 +168,10 @@ public class Expression {
         } else {
             // if E or M
             if (root.value == 'E') {
-                return values[27];
+                return values[26];
             }
             else if (root.value == 'M'){
-                return values[28];
+                return values[27];
             }
             else {  // if a-z
                 char x = root.value;

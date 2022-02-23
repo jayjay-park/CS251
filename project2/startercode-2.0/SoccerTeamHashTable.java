@@ -31,8 +31,28 @@ public class SoccerTeamHashTable {
      * @return
      */
     public int evaluateExpression(String expression) {
-        //TODO implement evaluateExpression
-        return 0;
+        // create an integer array of values of size 28
+        int[] val = new int[28];
+        int ascii = 'a';
+
+        // set the first 26 element
+        for (int i = 0; i < 27; i++) {
+            val[i] = ascii;
+            ascii++;
+        }
+
+        // set the 27th (E) and 28th (M)
+        val[26] = 10;
+        val[27] = tableCapacity;
+
+        // create new Expression
+        Expression newTree = new Expression(expression);
+        TreeNode root = newTree.makeTree();
+        
+        // evaluate
+        int result = newTree.evaluate(root, val);
+
+        return result;
     }
 
     /**
@@ -42,11 +62,45 @@ public class SoccerTeamHashTable {
      * @return expression to calculate the hash value
      */
     public String getExpression(String name) {
-        
+        int i = 0;
+        int len = name.length();
+
+        String e = "*" + "E";
+        String modulo = "%" + "M";
+        String exp = "(";
+
         for (char ch : name.toCharArray()) {
-            String s = ch + "%" + "M";
+            if (i == 0) {
+                // only for a0
+                exp += "(" + ch + modulo + ")";
+                // only add + when there is more than one element in string
+                if (len != 1) {
+                    exp += "+";
+                }
+            } 
+            else {
+                // for a1, a2, a3 ...
+                String temp = "(((" + ch + modulo + ")"; 
+                // multiply E how many time it needs
+                int index = i;
+                while (index != 0) {
+                    temp += e;
+                    index--;
+                }
+                temp += ")";
+                temp += modulo;
+                temp += ")";
+                exp += temp;
+                if (i != len-1) {
+                    exp += "+";
+                }
+            }
+            i++;
         }
-        return "";
+        // losing the expression with ") % M"
+        exp += ")";
+        exp += modulo;
+        return exp;
     }
 
     /**
@@ -56,8 +110,9 @@ public class SoccerTeamHashTable {
      * @return
      */
     public int getHash(String name) {
-        //TODO implement getHash
-        return 0;
+        String exp = getExpression(name);
+        int hValue = evaluateExpression(exp);
+        return hValue;
     }
 
     /**
@@ -67,7 +122,25 @@ public class SoccerTeamHashTable {
      * @return
      */
     public SoccerTeam get(String name) {
-        //TODO implement get
+        // array of arraylist
+        // table[i] = arraylist of Soccerteam object
+        // table[i].get(j) = Soccerteam object
+        int i = 0;
+        while (table[i] != null) { 
+            System.out.println(i);
+                int j = 0;
+                while (table[i].get(j) != null) {
+                    if (table[i].get(j) != null) {
+                        String teamName = table[i].get(j).getName();
+                        if (teamName.compareTo(name) == 0) {
+                            return table[i].get(j);
+                        }
+                    }
+                    j++;
+                }
+
+            i++;
+        }
         return null;
     }
 
