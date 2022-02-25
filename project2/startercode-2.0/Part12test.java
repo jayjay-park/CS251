@@ -27,6 +27,9 @@ public class Part12test {
         for (int i = 0; i < teamNo; i++) {
             test.table.put(teamsExpected[i]);
             SoccerTeam teamGot = test.table.get(teamsExpected[i].getName());
+            System.out.println(test.table);
+            //System.out.println(teamsExpected[i].getName());
+            //System.out.printf("teamGot: %s\n", teamGot.getName());
             if (teamGot.equals(teamsExpected[i]) == false) {
                 System.out.println("Get and put test failed");
                 return (3.0 * total) / expected;
@@ -63,7 +66,7 @@ public class Part12test {
             // System.out.println(actual);
             if (expectedS.compareTo(actual) != 0) {
                 System.out.println("Hash table not matched:failed");
-                // return (5.0 * total) / expected;
+                return (5.0 * total) / expected;
             }
             total += 2.0;
         }

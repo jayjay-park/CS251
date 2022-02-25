@@ -1,0 +1,63 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "type": "java",
+            "name": "Launch Current File",
+            "request": "launch",
+            "mainClass": "${file}"
+        },
+        {
+            "type": "java",
+            "name": "Launch Part0test",
+            "request": "launch",
+            "mainClass": "Part0test",
+            "projectName": "CS251_1ddf5428"
+        },
+        {
+            "type": "java",
+            "name": "Launch Part12test",
+            "request": "launch",
+            "mainClass": "Part12test",
+            "projectName": "CS251_1ddf5428"
+        },
+        {
+            "type": "java",
+            "name": "Launch Part3test",
+            "request": "launch",
+            "mainClass": "Part3test",
+            "projectName": "CS251_1ddf5428"
+        },
+        {
+            "type": "java",
+            "name": "Launch Part4test",
+            "request": "launch",
+            "mainClass": "Part4test",
+            "projectName": "CS251_1ddf5428"
+        },
+        {
+            "type": "java",
+            "name": "Launch Project2Tester",
+            "request": "launch",
+            "mainClass": "Project2Tester",
+            "projectName": "CS251_1ddf5428"
+        },
+        {
+            "type": "java",
+            "name": "Launch SoccerTeam",
+            "request": "launch",
+            "mainClass": "SoccerTeam",
+            "projectName": "CS251_1ddf5428"
+        },
+        {
+            "type": "java",
+            "name": "Launch SoccerTeamHashTable",
+            "request": "launch",
+            "mainClass": "SoccerTeamHashTable",
+            "projectName": "CS251_1ddf5428"
+        }
+    ]
+}

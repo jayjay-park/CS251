@@ -125,21 +125,17 @@ public class SoccerTeamHashTable {
         // array of arraylist
         // table[i] = arraylist of Soccerteam object
         // table[i].get(j) = Soccerteam object
-        int i = 0;
-        while (table[i] != null) { 
-            System.out.println(i);
-                int j = 0;
-                while (table[i].get(j) != null) {
-                    if (table[i].get(j) != null) {
-                        String teamName = table[i].get(j).getName();
-                        if (teamName.compareTo(name) == 0) {
-                            return table[i].get(j);
-                        }
-                    }
-                    j++;
-                }
+        int hValue = this.getHash(name);
+        
+        System.out.printf("get: %s\n", name);
 
-            i++;
+
+        if (table[hValue] != null) {
+            for (int i = 0; i < table[hValue].size(); i++) {
+                    if (table[hValue].get(i).getName().equals(name)) {
+                        return table[hValue].get(i);
+                    }
+            }
         }
         return null;
     }
@@ -150,8 +146,48 @@ public class SoccerTeamHashTable {
      * @param c
      */
     public void put(SoccerTeam c) {
-        //TODO implement put
-        return;
+        String name = c.getName();
+        int hIndex = this.getHash(name);
+
+        System.out.printf("*---------- put name: %s ----------*\n", name);
+        System.out.printf("put index: %d\n", hIndex);
+        
+        // if there is no object at the hash index, create and insert
+         if (table[hIndex] == null) { // table[hIndex].isEmpty()
+            table[hIndex] = new ArrayList<SoccerTeam>();
+            table[hIndex].add(c);
+            numTeams++;
+            System.out.printf("numTeam: %d\n", numTeams);
+            return;
+        }
+        if (table[hIndex].isEmpty()) {
+            table[hIndex].add(0, c);
+            numTeams++;
+            System.out.printf("numTeam: %d\n", numTeams);
+        }
+        // if the index is already created, resolve it by separate chaining
+        else {
+            int listLength = table[hIndex].size();
+
+            for (int i = 0; i < listLength; i++) {
+                // if the object already exists, return without doing anything
+                if (c.equals(table[hIndex].get(i))) {
+                    return;
+                }
+                // if name is same but with different values, replace it.
+                else if ((name.equals(table[hIndex].get(i).getName()))
+                        && (!c.equals(table[hIndex].get(i)))) {
+                    table[hIndex].set(i, c);
+                    System.out.printf("numTeam: %d\n", numTeams);  
+                    return;      
+                }
+            }
+            // else insert it at the end of the arraylist
+            table[hIndex].add(c);
+            numTeams++;
+            System.out.printf("numTeam: %d\n", numTeams);
+            return;
+        }
     }
 
     /**
@@ -161,7 +197,17 @@ public class SoccerTeamHashTable {
      * @return
      */
     public SoccerTeam remove(String name) {
-        //TODO implement remove
+       
+        System.out.printf("----------remove %s----------\n", name);
+
+        int hashV = this.getHash(name);
+        
+        for (int i = 0; i < table[hashV].size(); i++) {
+            if (table[hashV].get(i).getName().equals(name)) {
+                table[hashV].remove(table[hashV].get(i));
+                numTeams--;
+            }
+        }
         return null;
     }
 

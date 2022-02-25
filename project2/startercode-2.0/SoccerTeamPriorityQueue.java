@@ -94,8 +94,22 @@ public class SoccerTeamPriorityQueue {
      */
 
     public int insert(SoccerTeam c) {
-        //TODO: implement insert
-        return 0;
+
+        teamList[numTeams] = c;
+        teamTable.put(c);
+        int finalIndex = heapifyUp(numTeams);
+        numTeams++;
+        c.setPosInQueue(finalIndex);
+        return finalIndex;
+
+    }
+
+    public void swap (int child, int parent) {
+        SoccerTeam temp = teamList[parent];
+        teamList[parent] = teamList[child];
+        teamList[child] = temp;
+        teamList[parent].setPosInQueue(parent);
+        teamList[child].setPosInQueue(child);
     }
 
     /**
@@ -105,8 +119,13 @@ public class SoccerTeamPriorityQueue {
      * @return the index where the heapifyUp for the given index ends
      */
     public int heapifyUp(int index) {
-        //TODO implement heapifyUp
-        return 0;
+
+        int above = this.getParent(index);
+        if (index != 0 && teamList[above].compareTo(teamList[index]) == -1) {
+            swap(index, above);
+            return heapifyUp(above);
+        }
+        return index;
     }
 
     /**
@@ -117,7 +136,34 @@ public class SoccerTeamPriorityQueue {
      */
     public int heapifyDown(int index) {
         //TODO implement heapifyDown
-        return 0;
+        int i = index;
+        int leftChild = getLeftChild(index);
+        int rightChild = getRightChild(index);
+
+        if (leftChild >= numTeams || teamList[leftChild] == null) {
+            return index;
+        }
+        if (rightChild >= numTeams || teamList[rightChild] == null) {
+            if (teamList[leftChild].compareTo(teamList[i]) > 0) {
+                swap(leftChild, index);
+                return leftChild;
+            }
+            else {
+                return index;
+            }
+        }
+
+        if (teamList[leftChild].compareTo(teamList[i]) > 0) {
+            i = leftChild;
+        }
+        if (teamList[rightChild].compareTo(teamList[i]) > 0) {
+            i = rightChild;
+        }
+        if (i != index) {
+            swap(i, index);
+            return heapifyDown(i);
+        }
+        return index;
     }
 
     /**
@@ -126,8 +172,14 @@ public class SoccerTeamPriorityQueue {
      * @return return the team removed
      */
     public SoccerTeam delMax() {
-        //TODO implement delMax
-        return null;
+        SoccerTeam root = teamList[0];
+        String name = root.getName();
+        teamTable.remove(name);
+        teamList[0] = teamList[numTeams - 1];
+        teamList[numTeams - 1] = null;
+        heapifyDown(0);
+        numTeams--;
+        return root;
     }
 
     /**
@@ -148,8 +200,8 @@ public class SoccerTeamPriorityQueue {
      * @return return the team with the maximum priority
      */
     public SoccerTeam getMax() {
-        //TODO implement getMax
-        return null;
+        
+        return teamList[0];
     }
 
     /**
@@ -158,8 +210,23 @@ public class SoccerTeamPriorityQueue {
      * @return return the new index of the team oldTeamNewValue updated in the heap
      */
     public int update(int index, SoccerTeam oldTeamNewValue) {
-        //TODO implement update
-        return 0;
+        teamTable.put(oldTeamNewValue);
+        teamList[index] = oldTeamNewValue;
+        if (index ==0 ) {
+            index = heapifyDown(index);
+        }
+        else if (index == numTeams) {
+            index = heapifyUp(index);
+        }
+        else {
+            if (teamList[getParent(index)].compareTo(teamList[index]) < 0) {
+                index = heapifyUp(index);
+            }
+            else {
+                index = heapifyDown(index);
+            }
+        }
+        return index;
     }
 
 }

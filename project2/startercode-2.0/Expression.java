@@ -168,7 +168,8 @@ public class Expression {
         } else {
             // if E or M
             if (root.value == 'E') {
-                return values[26];
+                //return values[26];
+                return 10;
             }
             else if (root.value == 'M'){
                 return values[27];
