@@ -16,7 +16,7 @@ public class Part4test {
         boolean res = (TestRoutines.compareStringArrays(tourninfo,
                 tournament.toString().split("\n")));
 
-        // System.out.println(res);
+        System.out.println(res);
         if (res) {
             System.out.println("Constructor for tournament test passed");
             grade = 5.0;
@@ -33,18 +33,16 @@ public class Part4test {
         double grade1 = 0.0, grade2 = 0.0;
         for (int i = 0; i < numOfMatch; i++) {
             String[] tokens = matchInfo[i].split(",");
-            // System.out.println(tournament.getTeamNames()[Integer.parseInt(tokens[0])] +
-            // Integer.parseInt(tokens[1])
-            // + tournament.getTeamNames()[Integer.parseInt(tokens[2])]
-            // + Integer.parseInt(tokens[3]));
+            System.out.println(tournament.getTeamNames()[Integer.parseInt(tokens[0])] +
+            Integer.parseInt(tokens[1])
+            + tournament.getTeamNames()[Integer.parseInt(tokens[2])]
+            + Integer.parseInt(tokens[3]));
 
             tournament.updateTournament(tournament.getTeamNames()[Integer.parseInt(tokens[0])],
                     Integer.parseInt(tokens[1]),
                     tournament.getTeamNames()[Integer.parseInt(tokens[2])], Integer.parseInt(tokens[3]));
-            // System.out.println(tournament);
-            // System.out.println(tournament.findKthTeam(Integer.parseInt(tokens[4])) + "is
-            // the "
-            // + Integer.parseInt(tokens[4]) + "th team");
+            System.out.println(tournament);
+            System.out.println(tournament.findKthTeam(Integer.parseInt(tokens[4])) + "is the "+ Integer.parseInt(tokens[4]) + "th team");
 
             ArrayList<String> queue = queues.get(i);
             SoccerTeam kthTeam = tournament.findKthTeam(Integer.parseInt(tokens[4]));
@@ -54,7 +52,7 @@ public class Part4test {
                     + "th team";
             res = (outputs[outputs.length - 1].compareTo(actualK) == 0);
             if (res == false) {
-                System.out.println("Finding kth Rank implementation failed");
+                System.out.println("----------Finding kth Rank implementation failed----------");
             } else {
                 grade1 += 3.0;
                 System.out.println("Another Finding kth Rank implementation test passed");
@@ -63,7 +61,7 @@ public class Part4test {
                     (tournament.toString() + "\n" + kthTeam + "is the "
                             + Integer.parseInt(tokens[4]) + "th team").trim().split("\n")));
             if (res == false) {
-                System.out.println("Tournament Update implementation failed");
+                System.out.println("--------Tournament Update implementation failed--------");
             } else {
                 grade2 += 3.0;
 

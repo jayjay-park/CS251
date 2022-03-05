@@ -179,6 +179,7 @@ public class SoccerTeamPriorityQueue {
         teamList[numTeams - 1] = null;
         heapifyDown(0);
         numTeams--;
+        
         return root;
     }
 
@@ -212,14 +213,17 @@ public class SoccerTeamPriorityQueue {
     public int update(int index, SoccerTeam oldTeamNewValue) {
         teamTable.put(oldTeamNewValue);
         teamList[index] = oldTeamNewValue;
-        if (index ==0 ) {
+        if (index == 0 ) {
+            // heapifyDown
             index = heapifyDown(index);
         }
         else if (index == numTeams) {
+            // heapifyUp
             index = heapifyUp(index);
         }
         else {
-            if (teamList[getParent(index)].compareTo(teamList[index]) < 0) {
+            int parent = getParent(index);
+            if (teamList[parent].compareTo(teamList[index]) < 0) {
                 index = heapifyUp(index);
             }
             else {
