@@ -114,11 +114,52 @@ public class Sorting<Item extends Comparable<Item>> {
      * @param list
      */
     public ArrayList<Item> insertionSort(ArrayList<Item> list) {
-        // TODO: part 1
+        int r = list.size();
+        System.out.println("---item looks like---");
+        System.out.println(list.get(1));
+        System.out.println(list.get(4));
 
+        for (int i = 1; i < r; i++) {
+            int j = i - 1;
+            while (j >= 0 && greaterThan(list, j, j+1)) {
+                swap(list, j, j+1);
+                j -= 1;
+            }
+        }
+
+        print(list);
         return list;
     }
 
+    // helper function for mergeSort
+    public ArrayList<Item> merge(ArrayList<Item> left, ArrayList<Item> right) {
+        
+        ArrayList<Item> mergedArray = new ArrayList<Item>();
+        int i = 0;
+        int j = 0;
+
+        while ((i < left.size()) && (j < right.size())) {
+            if (lessThan(left.get(i), right.get(j)) || equal(left.get(i), right.get(j))) {
+                mergedArray.add(left.get(i));
+                i++;
+            }
+            else {
+                mergedArray.add(right.get(j));
+                j++;
+            }
+        }
+        // if there is remaining
+        while (i < left.size()) {
+            mergedArray.add(left.get(i));
+            i++;
+        } 
+        while (j < right.size()) {
+            mergedArray.add(right.get(j));
+            j++;
+        }       
+        // return merged array
+        return mergedArray;
+    }
 
     /**
      *
@@ -127,9 +168,26 @@ public class Sorting<Item extends Comparable<Item>> {
      * @param list
      */
     public ArrayList<Item> mergeSort(ArrayList<Item> list) {
-        // TODO: part 1
+        // index
+        int l = 0;
+        int r = list.size() - 1;
 
-        return list;
+        //temp ArrayList
+        ArrayList<Item> merged = new ArrayList<Item>();
+        ArrayList<Item> left = new ArrayList<Item>();
+        ArrayList<Item> right = new ArrayList<Item>();
+
+        if (l < r) {
+            int m = (l + r) / 2;
+
+            // sort each lists
+            left = mergeSort(new ArrayList<Item>(list.subList(0, m)));
+            right = mergeSort(new ArrayList<Item>(list.subList(m + 1, r)));
+            // merge the sorted lists
+            merged = merge(left, right);
+        }
+        
+        return merged;
     }
 
 
@@ -182,8 +240,16 @@ public class Sorting<Item extends Comparable<Item>> {
         for (Integer k : K) {
             A.add(k);
         }
-
+        System.out.println("----Input----");
         s.print(A);
+
+        ArrayList<Integer> i = new ArrayList<Integer>();
+        //System.out.println("----Insertion Sort----");
+        //i = s.insertionSort(A);
+        
+        System.out.println("----MergeSort----");
+        i = s.mergeSort(A);
+        s.print(i);
 
     }
 
