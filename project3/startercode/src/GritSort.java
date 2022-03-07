@@ -46,6 +46,9 @@ public class GritSort<Item extends Comparable<Item>> {
             TODO: STEP 3: merge the buckets and return the elements of the merged buckets as a list
          */
 
+         ArrayList<ArrayList<Item>> chunks = new ArrayList<ArrayList<Item>>();
+         
+
         return list;
     }
 
@@ -70,9 +73,24 @@ public class GritSort<Item extends Comparable<Item>> {
      */
     public ArrayList<ArrayList<Item>> makeChunks(ArrayList<Item> list) {
         // TODO: part 1
+        ArrayList chunk = new ArrayList<ArrayList<Item>>();
+        ArrayList temp;
+        Sorting s = new Sorting();
+        int start = 0;
 
+        for (int i = 0; i < list.size(); i++) {
+            if (s.greaterThan(list, i, i+1)) {
+                // sublist[start, i]
+                temp = new ArrayList<Item>(list.subList(start, i + 1));
+                // add to chunk
+                chunk.add(temp);
+                // update start
+                start = i+1;
 
-        return null;
+            }
+        }
+
+        return chunk;
     }
 
 
@@ -133,8 +151,14 @@ public class GritSort<Item extends Comparable<Item>> {
      */
     public ArrayList<Item> mergeChunk(ArrayList<ArrayList<Item>> bucket) {
         // TODO: part 1
+        int len = bucket.size();
+        ArrayList<Item> merged = new ArrayList<Item>();
 
-        return null;
+        for (int i = 0; i < len; i++) {
+            merged.addAll(bucket.get(i));
+        }
+
+        return merged;
     }
 
 
@@ -156,6 +180,9 @@ public class GritSort<Item extends Comparable<Item>> {
         }
 
         s.print(A);
+        //ArrayList<ArrayList<Item>> B = new ArrayList<ArrayList<Item>>();
+        //B = makeChunks(A);
+        //s.print
 
     }
 

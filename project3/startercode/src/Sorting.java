@@ -138,23 +138,29 @@ public class Sorting<Item extends Comparable<Item>> {
         int i = 0;
         int j = 0;
 
+        //System.out.printf("size left:%d\n", left.size());
+        //System.out.printf("size right:%d\n", right.size());
         while ((i < left.size()) && (j < right.size())) {
-            if (lessThan(left.get(i), right.get(j)) || equal(left.get(i), right.get(j))) {
+            if (lessThan(left.get(i), right.get(j))) {
                 mergedArray.add(left.get(i));
+                //print(mergedArray);
                 i++;
             }
             else {
                 mergedArray.add(right.get(j));
+                //print(mergedArray);
                 j++;
             }
         }
         // if there is remaining
         while (i < left.size()) {
             mergedArray.add(left.get(i));
+            //print(mergedArray);
             i++;
         } 
         while (j < right.size()) {
             mergedArray.add(right.get(j));
+            //print(mergedArray);
             j++;
         }       
         // return merged array
@@ -168,9 +174,17 @@ public class Sorting<Item extends Comparable<Item>> {
      * @param list
      */
     public ArrayList<Item> mergeSort(ArrayList<Item> list) {
+        
+        //System.out.println("Given list:");
+        //print(list);
+
         // index
         int l = 0;
         int r = list.size() - 1;
+
+        if (r < 1) {
+            return list;
+        }
 
         //temp ArrayList
         ArrayList<Item> merged = new ArrayList<Item>();
@@ -181,8 +195,8 @@ public class Sorting<Item extends Comparable<Item>> {
             int m = (l + r) / 2;
 
             // sort each lists
-            left = mergeSort(new ArrayList<Item>(list.subList(0, m)));
-            right = mergeSort(new ArrayList<Item>(list.subList(m + 1, r)));
+            left = mergeSort(new ArrayList<Item>(list.subList(0, m + 1)));
+            right = mergeSort(new ArrayList<Item>(list.subList(m + 1, r + 1)));
             // merge the sorted lists
             merged = merge(left, right);
         }
