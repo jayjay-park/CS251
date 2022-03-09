@@ -6,6 +6,13 @@
     "configurations": [
         {
             "type": "java",
+            "name": "Launch Scapegoat",
+            "request": "launch",
+            "mainClass": "Scapegoat",
+            "projectName": "CS251_1ddf5428"
+        },
+        {
+            "type": "java",
             "name": "Launch GritSort",
             "request": "launch",
             "mainClass": "GritSort",

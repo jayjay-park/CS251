@@ -87,32 +87,107 @@ public class Scapegoat {
      *
      */
     private Node scapegoatNode(Node node) {
-        // TODO:
-        // -----------------------
+        int h = 0;  //height
 
-        return node;
-        // -----------------------
+        while (node.parent != null) {
+            h++;
+            if ((size(node.left) <= (threshold * size(node))) && (size(node.right) <= (threshold * size(node)))) {
+                node = node.parent;
+            }
+            else {
+                System.out.println("Scapegoat found:");
+                System.out.println(node.parent.toString());
+                return node.parent;
+            }
+
+        }
+
+        return null;
     }
 
+    // helper function
+    public Node buildBalancedTree(ArrayList<Node> list, int i, int size) {
+        if (size == 0) {
+            return null;
+        }
+
+        int middle = size / 2;
+        list.get(i + middle).left = buildBalancedTree(list, i, middle);
+        if (list.get(i + middle).left != null) {
+            list.get(i + middle).left.parent = list.get(i + middle);
+        }
+        list.get(i + middle).right = buildBalancedTree(list, i + middle + 1, size - middle - 1);
+        if (list.get(i + middle).right != null) {
+            list.get(i + middle).right.parent = list.get(i + middle);
+        }
+
+        return list.get(i + middle);
+    }
 
     /**
      *
      * This function re-builds the tree rooted at node into a perfectly balanced tree.
+     * Jayjay: A ScapegoaTree keeps itself balanced by partial rebuilding operations. 
+     *         If we let m = a.length/2, then a[m] becomes the root of the new subtree, 
+     *         a[0], ... a[m-1] get stored recursibely in the left subtree and a[m+1], ... ,a[a.size()-1] in right subtree
      *
-     * @return void
+     * @return node
      *
      */
     public Node rebuild(Node node) {
-        // TODO
-        // rebuild the subtree whose root is node
-        // -----------------------
+        
+        //1. get the elements in sorted order by traversing in inorder --> flatten 
+        ArrayList<Node> sorted = new ArrayList<Node>();
+        int size = size(node);  // size of subarray
 
+        // 1-1. unsorted tree
+        sorted = (ArrayList<Node>) inorder(node);
 
+        // 1-2. flatten the tree
+        boolean complete = false;
+        Node temp = node;
+        ArrayDeque<Node> a = new ArrayDeque<Node>();
 
-        return node;
-        // -----------------------
+        while (!complete) {
+            if ()
+        }
+
+        
+
+        //2. build a perfectly balanced BST
+
+        /* int size = size(node);
+        Node nParent = node.parent;
+        
+        if ( nParent == null) {
+            Node cur = buildBalancedTree(sorted, 0, size);
+            cur.parent = null;
+        }
+        else if (nParent.right == node) {
+            nParent.right = buildBalancedTree(sorted, 0, size);
+            nParent.right.parent = nParent;
+        }
+        else {
+            nParent.left = buildBalancedTree(sorted, 0, size);
+            nParent.left.parent = nParent;
+        } */
+        // return node;
+
+        return buildBalancedTree(sorted, 0, size - 1);
     }
 
+    // helper function
+    public int getDepth(Node node) {
+        if (node == null) {
+            return -1;
+        }
+        else if (node.parent == null){
+            return 0;
+        }
+        else {
+            return getDepth(node.parent) + 1;
+        }
+    }
 
     /**
      *
@@ -122,14 +197,70 @@ public class Scapegoat {
      *
      */
     public void add(T data) {
+
+        Node traverse = root;
+        Node parentNode = null;
+
         if (root == null) {
             root = new Node(data, null, null, null);
             NodeCount ++;
         } else {
-            // TODO:
-            // -----------------------
+            // 1. find the insertion point. know the depth at which the node is inserted
+            while (traverse != null) {
+                parentNode = traverse;
+                // if data is smaller
+                if (data.compareTo(traverse.data) == -1) {
+                    traverse = traverse.left;
+                }
+                else if (data.compareTo(traverse.data) == 1) {
+                    traverse = traverse.right;
+                }
+                // if node to be inserted already exists in the tree, skip inserting the new node
+                else {
+                    return;
+                }
+            }
+            // 2. insert the new node
+            Node add = new Node(data, parentNode, null, null);
+            if (parentNode.data.compareTo(add.data) == -1) {
+                parentNode.right = add;
+            }
+            else {
+                parentNode.left = add;
+            }
+            NodeCount++;
+
+            // 3. check if the tree is still alpha weight balanced -> node? root?
+            while (add.parent != null) {
+                if ((size(add.left) <= (threshold * size(add))) && (size(add.right) <= (threshold * size(add)))) {
+                    System.out.printf("%d seems balanced!\n", add.data.a);
+                    add = add.parent;
+                }
+                else {
+                    // not balanced -> rebuild
+                    // 4-1. call function scapegoatNode
+                    // 4-2. call rebuild
+                    // 4.3 once you get the root of the newly rebuild ...
+                    
+                    System.out.printf("%d needs to rebuild!\n", add.data.a);
+                    Node scapegoat = scapegoatNode(add);    //!
+                    Node sgParent = scapegoat.parent;
+                    Node rebuild = rebuild(scapegoat);  //!
+                    rebuild.parent = sgParent;
+                    if (sgParent != null) {
+                        if (sgParent.left == scapegoat) {
+                            sgParent.left = rebuild;
+                        }
+                        else {
+                            sgParent.right = rebuild;
+                        }
+                    }
+                    if (scapegoat == root) {
+                        root = rebuild;
+                    }
+                }
+            }
             
-            // -----------------------
         }
     }
 
@@ -256,10 +387,14 @@ public class Scapegoat {
     public static void main(String[] args) {
         // write your code here
         Scapegoat tree = new Scapegoat();
+        
         tree.add(new T(40));
         tree.add(new T(10));
-        tree.remove(new T(40));
-        System.out.println();
+        //tree.remove(new T(40));
+
+        T data = new T(40);
+        Node node = tree.find(data);
+        tree.scapegoatNode(node);
 
         tree.add(new T(8));
         tree.add(new T(12));
@@ -273,13 +408,15 @@ public class Scapegoat {
         System.out.println("adding 18: "+tree.breadthFirstSearch());
         System.out.println();
 
-        tree.remove(new T(14));
+        /* tree.remove(new T(14));
         tree.remove(new T(16));
         System.out.println("removing 14,16: "+tree.breadthFirstSearch());
         tree.remove(new T(12));
         System.out.println("removing 12: "+tree.breadthFirstSearch());
         tree.remove(new T(18));
-        System.out.println("removing 18: "+tree.breadthFirstSearch());
+        System.out.println("removing 18: "+tree.breadthFirstSearch()); */
+
+
     }
 
 
