@@ -1,4 +1,3 @@
-
 import java.io.*;
 import java.util.ArrayList;
 
@@ -27,6 +26,7 @@ public class SampleScapegoatTest {
 		for (int i = 0; i < 10; i++) {
 			nodes[i] = tree.new Node(new T(i+1), null, null, null);
 		}
+		System.out.println(nodes.length);
 		nodes[4].left = nodes[1]; nodes[1].parent = nodes[4];
 		nodes[1].left = nodes[0]; nodes[0].parent = nodes[1];
 		nodes[1].right = nodes[2]; nodes[2].parent = nodes[1];

@@ -91,7 +91,7 @@ public class Scapegoat {
 
         while (node.parent != null) {
             h++;
-            if ((size(node.left) <= (threshold * size(node))) && (size(node.right) <= (threshold * size(node)))) {
+            if (size(node) <= (threshold * size(node.parent))) {
                 node = node.parent;
             }
             else {
@@ -101,7 +101,6 @@ public class Scapegoat {
             }
 
         }
-
         return null;
     }
 
@@ -111,17 +110,25 @@ public class Scapegoat {
             return null;
         }
 
-        int middle = size / 2;
-        list.get(i + middle).left = buildBalancedTree(list, i, middle);
-        if (list.get(i + middle).left != null) {
-            list.get(i + middle).left.parent = list.get(i + middle);
-        }
-        list.get(i + middle).right = buildBalancedTree(list, i + middle + 1, size - middle - 1);
-        if (list.get(i + middle).right != null) {
-            list.get(i + middle).right.parent = list.get(i + middle);
+        if (i > size) {
+            return null;
         }
 
-        return list.get(i + middle);
+        int middle = (i + size) / 2 + (i + size) % 2;
+        Node current = list.get(middle);
+
+        current.left = buildBalancedTree(list, i, middle - 1);
+
+        if (current.left != null) {
+            current.left.parent = current;
+        }
+
+        current.right = buildBalancedTree(list, middle + 1, size);
+        if (current.right != null) {
+            current.right.parent = current;
+        }
+
+        return current;
     }
 
     /**
@@ -138,42 +145,12 @@ public class Scapegoat {
         
         //1. get the elements in sorted order by traversing in inorder --> flatten 
         ArrayList<Node> sorted = new ArrayList<Node>();
-        int size = size(node);  // size of subarray
 
-        // 1-1. unsorted tree
+        // 1-1. sorted tree ===> is it really a sorted list?
         sorted = (ArrayList<Node>) inorder(node);
 
-        // 1-2. flatten the tree
-        boolean complete = false;
-        Node temp = node;
-        ArrayDeque<Node> a = new ArrayDeque<Node>();
-
-        while (!complete) {
-            if ()
-        }
-
-        
-
         //2. build a perfectly balanced BST
-
-        /* int size = size(node);
-        Node nParent = node.parent;
-        
-        if ( nParent == null) {
-            Node cur = buildBalancedTree(sorted, 0, size);
-            cur.parent = null;
-        }
-        else if (nParent.right == node) {
-            nParent.right = buildBalancedTree(sorted, 0, size);
-            nParent.right.parent = nParent;
-        }
-        else {
-            nParent.left = buildBalancedTree(sorted, 0, size);
-            nParent.left.parent = nParent;
-        } */
-        // return node;
-
-        return buildBalancedTree(sorted, 0, size - 1);
+        return buildBalancedTree(sorted, 0, sorted.size() - 1);
     }
 
     // helper function
@@ -189,6 +166,9 @@ public class Scapegoat {
         }
     }
 
+    // helper function
+    
+
     /**
      *
      * This function adds an element into the tree.
@@ -201,34 +181,40 @@ public class Scapegoat {
         Node traverse = root;
         Node parentNode = null;
 
+        Node checkDuplicate = find(data);
+        if (checkDuplicate == null) {
+            return; // why return? 
+        }
+
         if (root == null) {
             root = new Node(data, null, null, null);
             NodeCount ++;
         } else {
             // 1. find the insertion point. know the depth at which the node is inserted
-            while (traverse != null) {
-                parentNode = traverse;
-                // if data is smaller
-                if (data.compareTo(traverse.data) == -1) {
-                    traverse = traverse.left;
-                }
-                else if (data.compareTo(traverse.data) == 1) {
-                    traverse = traverse.right;
-                }
-                // if node to be inserted already exists in the tree, skip inserting the new node
-                else {
-                    return;
-                }
-            }
+            insertionPoint(root, data);
+
+            Node added = find(data);
+            Node parentAdded = added.parent;
+            NodeCount++;
+            int depth = getDepth(added);
+
+            //assign parent(root)?
+            
+
+
+
             // 2. insert the new node
-            Node add = new Node(data, parentNode, null, null);
+            /*Node add = new Node(data, parentNode, null, null);
+            System.out.printf("before inserting: %d\n", data.a);
+            print();
             if (parentNode.data.compareTo(add.data) == -1) {
                 parentNode.right = add;
             }
             else {
                 parentNode.left = add;
             }
-            NodeCount++;
+            System.out.printf("after inserting: %d\n", data.a);
+            print();*/
 
             // 3. check if the tree is still alpha weight balanced -> node? root?
             while (add.parent != null) {
@@ -237,16 +223,18 @@ public class Scapegoat {
                     add = add.parent;
                 }
                 else {
-                    // not balanced -> rebuild
+                    // not balanced -> rebuild =================== problem =====================
                     // 4-1. call function scapegoatNode
                     // 4-2. call rebuild
                     // 4.3 once you get the root of the newly rebuild ...
                     
                     System.out.printf("%d needs to rebuild!\n", add.data.a);
+
                     Node scapegoat = scapegoatNode(add);    //!
                     Node sgParent = scapegoat.parent;
-                    Node rebuild = rebuild(scapegoat);  //!
+                    Node rebuild = rebuild(sgParent);   // or rebuild(scpegoat)?
                     rebuild.parent = sgParent;
+
                     if (sgParent != null) {
                         if (sgParent.left == scapegoat) {
                             sgParent.left = rebuild;
@@ -262,6 +250,30 @@ public class Scapegoat {
             }
             
         }
+    }
+
+    // help function
+    public Node insertionPoint(Node r, T data) {
+        if(data.compareTo(r.data) < 0) {
+            if (r.left == null) {
+                r.left = new Node(data, r, null, null);
+            }
+            else {
+                r.left = insertionPoint(r.left, data);
+            }
+        }
+        else if (data.compareTo(r.data) > 0) {
+            if (r.right == null) {
+                r.right = new Node(data, r, null, null); 
+            }
+            else {
+                r.right = insertionPoint(r.right, data);
+            }
+        }
+        else {
+            return null;
+        }
+        return r;
     }
 
 
@@ -298,7 +310,7 @@ public class Scapegoat {
     // inorder traversal
     public List<Node> inorder(Node node) {
         List<Node> nodes = new ArrayList<Node>();
-        if(node.left != null){
+        if (node.left != null){
             nodes.addAll(inorder(node.left));
         }
         nodes.add(node);
@@ -407,6 +419,10 @@ public class Scapegoat {
         tree.add(new T(18));
         System.out.println("adding 18: "+tree.breadthFirstSearch());
         System.out.println();
+
+        tree.print();
+        
+
 
         /* tree.remove(new T(14));
         tree.remove(new T(16));
