@@ -143,6 +143,10 @@ public class Scapegoat {
         Node p = node.parent;
         Node rebuilt = buildBalancedTree(inorder(node));
         rebuilt.parent = p;
+        
+        // -----inserted
+        MaxNodeCount = NodeCount;
+
         return rebuilt;
 
         //1. get the elements in sorted order by traversing in inorder --> flatten 
@@ -170,6 +174,7 @@ public class Scapegoat {
         if (root == null) {
             root = new Node(data, null, null, null);
             NodeCount ++;
+
         } else {
             // 1. find the insertion point. know the depth at which the node is inserted
             insertionPoint(root, data);
@@ -185,9 +190,9 @@ public class Scapegoat {
 
             int h = 0;
             while (p != null) {
-                if (h > 20) {
-                    break;
-                }
+                //if (h > 20) {
+                //    break;
+                //}
                 h++;
                 p = p.parent;
             }
@@ -200,7 +205,7 @@ public class Scapegoat {
                     // 4-2. call rebuild
                     // 4.3 once you get the root of the newly rebuild ...
                     
-                    System.out.printf("%d needs to rebuild!\n", added.data.a);
+                    //System.out.printf("%d needs to rebuild!\n", added.data.a);
                     print();
                     
                     Node sg = scapegoatNode(added);
@@ -211,13 +216,18 @@ public class Scapegoat {
                         sg.parent.left = rebuild(sg); 
                     }
                     else if (sg.parent.right != null && sg.parent.right.equals(sg)){
-                        sg.parent.right = rebuild(sg);
+                        Node child = rebuild(sg);
+                        sg.parent.right = child;
+                        child = sg;
+                        
+                        //sg.parent.right = rebuild(sg);
+
                     }
                 }
 
                 MaxNodeCount = Math.max(MaxNodeCount, NodeCount);
-                System.out.printf("%d seems balanced!\n", added.data.a);
-                print();
+                //System.out.printf("%d seems balanced!\n", added.data.a);
+                //print();
         }
     }
 
