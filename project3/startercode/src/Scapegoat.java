@@ -87,43 +87,40 @@ public class Scapegoat {
      *
      */
     private Node scapegoatNode(Node node) {
-        int h = 0;  //height
 
         while (node.parent != null) {
-            h++;
-            if (size(node) <= (threshold * size(node.parent))) {
-                node = node.parent;
+            node = node.parent;
+            if (size(node) > (threshold * size(node.parent))) {
+                break;
             }
-            else {
-                System.out.println("Scapegoat found:");
-                System.out.println(node.parent.toString());
-                return node.parent;
-            }
-
         }
-        return null;
+        return node.parent;
     }
 
     // helper function
-    public Node buildBalancedTree(ArrayList<Node> list, int i, int size) {
-        if (size == 0) {
+    public Node buildBalancedTree(List<Node> list) {
+        if (list.isEmpty()) {
             return null;
         }
 
-        if (i > size) {
-            return null;
-        }
-
-        int middle = (i + size) / 2 + (i + size) % 2;
+        int middle = list.size() / 2;
         Node current = list.get(middle);
 
-        current.left = buildBalancedTree(list, i, middle - 1);
+        List<Node> left = new ArrayList<Node>();
+        for (int i = 0; i < middle; i++) {
+            left.add(list.get(i));
+        }
 
+        List<Node> right = new ArrayList<Node>();
+        for (int i = middle + 1; i < list.size(); i++) {
+            right.add(list.get(i));
+        }
+
+        current.left = buildBalancedTree(left);
         if (current.left != null) {
             current.left.parent = current;
         }
-
-        current.right = buildBalancedTree(list, middle + 1, size);
+        current.right = buildBalancedTree(right);
         if (current.right != null) {
             current.right.parent = current;
         }
@@ -143,30 +140,16 @@ public class Scapegoat {
      */
     public Node rebuild(Node node) {
         
+        Node p = node.parent;
+        Node rebuilt = buildBalancedTree(inorder(node));
+        rebuilt.parent = p;
+        return rebuilt;
+
         //1. get the elements in sorted order by traversing in inorder --> flatten 
-        ArrayList<Node> sorted = new ArrayList<Node>();
-
         // 1-1. sorted tree ===> is it really a sorted list?
-        sorted = (ArrayList<Node>) inorder(node);
-
         //2. build a perfectly balanced BST
-        return buildBalancedTree(sorted, 0, sorted.size() - 1);
     }
 
-    // helper function
-    public int getDepth(Node node) {
-        if (node == null) {
-            return -1;
-        }
-        else if (node.parent == null){
-            return 0;
-        }
-        else {
-            return getDepth(node.parent) + 1;
-        }
-    }
-
-    // helper function
     
 
     /**
@@ -178,12 +161,10 @@ public class Scapegoat {
      */
     public void add(T data) {
 
-        Node traverse = root;
-        Node parentNode = null;
-
         Node checkDuplicate = find(data);
-        if (checkDuplicate == null) {
-            return; // why return? 
+
+        if (checkDuplicate != null) {
+            return;
         }
 
         if (root == null) {
@@ -194,65 +175,53 @@ public class Scapegoat {
             insertionPoint(root, data);
 
             Node added = find(data);
-            Node parentAdded = added.parent;
+            if (added == null) {
+                System.out.println("node was not added");
+                return;
+            }
+
             NodeCount++;
-            int depth = getDepth(added);
+            Node p = added.parent;
 
-            //assign parent(root)?
-            
-
-
-
-            // 2. insert the new node
-            /*Node add = new Node(data, parentNode, null, null);
-            System.out.printf("before inserting: %d\n", data.a);
-            print();
-            if (parentNode.data.compareTo(add.data) == -1) {
-                parentNode.right = add;
-            }
-            else {
-                parentNode.left = add;
-            }
-            System.out.printf("after inserting: %d\n", data.a);
-            print();*/
-
-            // 3. check if the tree is still alpha weight balanced -> node? root?
-            while (add.parent != null) {
-                if ((size(add.left) <= (threshold * size(add))) && (size(add.right) <= (threshold * size(add)))) {
-                    System.out.printf("%d seems balanced!\n", add.data.a);
-                    add = add.parent;
+            int h = 0;
+            while (p != null) {
+                if (h > 20) {
+                    break;
                 }
-                else {
-                    // not balanced -> rebuild =================== problem =====================
+                h++;
+                p = p.parent;
+            }
+
+            
+            // 3. check if the tree is still alpha weight balanced -> node? root?
+                if (h > Math.floor(Math.log(NodeCount) / Math.log(1 / threshold))) {
+                    // not balanced -> rebuild
                     // 4-1. call function scapegoatNode
                     // 4-2. call rebuild
                     // 4.3 once you get the root of the newly rebuild ...
                     
-                    System.out.printf("%d needs to rebuild!\n", add.data.a);
-
-                    Node scapegoat = scapegoatNode(add);    //!
-                    Node sgParent = scapegoat.parent;
-                    Node rebuild = rebuild(sgParent);   // or rebuild(scpegoat)?
-                    rebuild.parent = sgParent;
-
-                    if (sgParent != null) {
-                        if (sgParent.left == scapegoat) {
-                            sgParent.left = rebuild;
-                        }
-                        else {
-                            sgParent.right = rebuild;
-                        }
+                    System.out.printf("%d needs to rebuild!\n", added.data.a);
+                    print();
+                    
+                    Node sg = scapegoatNode(added);
+                    if (sg.parent == null) {
+                        rebuild(sg);
                     }
-                    if (scapegoat == root) {
-                        root = rebuild;
+                    else if (sg.parent.left != null && sg.parent.left.equals(sg)) {
+                        sg.parent.left = rebuild(sg); 
+                    }
+                    else if (sg.parent.right != null && sg.parent.right.equals(sg)){
+                        sg.parent.right = rebuild(sg);
                     }
                 }
-            }
-            
+
+                MaxNodeCount = Math.max(MaxNodeCount, NodeCount);
+                System.out.printf("%d seems balanced!\n", added.data.a);
+                print();
         }
     }
 
-    // help function
+    // help function (add)
     public Node insertionPoint(Node r, T data) {
         if(data.compareTo(r.data) < 0) {
             if (r.left == null) {
@@ -277,6 +246,115 @@ public class Scapegoat {
     }
 
 
+    // helper function
+    public Node removeNode(Node remove, T data) {
+
+        if (remove == null) {
+            return remove;
+        }
+        // --- traverse --- //
+        if (data.compareTo(remove.data) < 0) {
+            remove.left = removeNode(remove.left, data);
+        }
+        else if (data.compareTo(remove.data) > 0) {
+            remove.right = removeNode(remove.right, data);
+        }
+        else {
+            if (remove.left == null && remove.right == null) {
+                Node parent = remove.parent;
+                if (parent.left == remove) {
+                    parent.left = null;
+                }
+                else {
+                    parent.right = null;
+                }
+                remove = null;
+            }
+            else if (remove.left != null && remove.right != null) {
+                Node suc = succNode(remove);
+                remove.data = suc.data;
+                remove.right = removeNode(remove.right, suc.data);
+            }    
+            else {
+                // single child
+                if (remove.left != null) {
+                    Node left = remove.left;
+                    left.parent = remove.parent;
+                    remove = left;
+                }
+                else {
+                    Node right = remove.right;
+                    right.parent = remove.parent;
+                    remove = right;
+                }
+            }
+
+            
+            //past code
+            // deleting root
+            /* if (remove.parent == null) {
+                // leaf node
+                if (remove.left == null && remove.right == null) {
+                    remove = null;
+                    root = null;
+                }
+                else if (remove.left != null && remove.left.parent == remove) {
+                    root = remove.left;
+                    root.parent = null;
+                }
+                else if (remove.right != null && remove.right.parent == remove) {
+                    root = remove.right;
+                    root.parent = null;
+                }
+                else {
+                    Node successor = succNode(remove);
+                    remove.data = successor.data;
+                    remove.right = removeNode(remove.right, successor.data);
+                }
+            }
+            // if it is a leaf node in the middle
+            else if (remove.left == null && remove.right == null) {
+                Node p = remove.parent;
+                if (p.left != null && p.left.equals(remove)) {
+                    p.left = null;
+                }
+                else if (p.right != null && p.right.equals(remove)) {
+                    p.right = null;
+                }
+                remove.parent = null;
+                remove = null;
+            }
+            // if there's two child
+            else if (remove.left != null && remove.right != null) {
+                Node successor = succNode(remove);
+                remove.data = successor.data;
+                remove.right = removeNode(remove.right, successor.data);
+            }
+            // if there is one child
+            else {
+                Node c = null; 
+                if (remove.left != null) {
+                    c = remove.left;
+                }
+                else if (remove.right != null) {
+                    c = remove.right;
+                }
+                Node p = remove.parent;
+                if (p.left != null && p.left.equals(remove)) {
+                    p.left = c;
+                }
+                else if (p.right != null && p.right.equals(remove)) {
+                    p.right = c;
+                }
+                c.parent= p;
+                remove = c;
+
+            }*/
+
+        }
+        return remove;
+    }
+
     /**
      *
      * This function removes an element from the tree.
@@ -285,10 +363,30 @@ public class Scapegoat {
      *
      */
     public void remove(T data) {
-        // TODO
-        // -----------------------
+        // make sure it's not null --> avoid null pointer
+        if (find(data) == null) {
+            return;
+        }
+        else {
+            root = removeNode(this.root, data);
+            NodeCount--;
+            if (NodeCount <= threshold * MaxNodeCount) {
+                root = rebuild(root);
+                MaxNodeCount = NodeCount;
 
-        // -----------------------
+            }
+        }
+
+        // 1. standard deletion operation for binary search trees would be run
+        /*removeNode(root, data);
+        // 2. n would be decremented by a factor of 1
+        NodeCount--;
+        // 3. n would be compared with q/2 (upper-bound for the number of items a tree holds)
+        // 4. if n < q/2 the entire tree would be re-built and q would be set equal to n
+        if (NodeCount <= threshold * MaxNodeCount) {
+            MaxNodeCount = NodeCount;
+            rebuild(root);
+        }*/
 
     }
 
@@ -402,11 +500,9 @@ public class Scapegoat {
         
         tree.add(new T(40));
         tree.add(new T(10));
-        //tree.remove(new T(40));
-
-        T data = new T(40);
-        Node node = tree.find(data);
-        tree.scapegoatNode(node);
+        tree.remove(new T(40));
+        tree.print();
+        System.out.println();
 
         tree.add(new T(8));
         tree.add(new T(12));
@@ -415,22 +511,26 @@ public class Scapegoat {
         tree.add(new T(11));
         tree.add(new T(14));
         tree.add(new T(16));
-        System.out.println("adding 16: "+tree.breadthFirstSearch());
+        //System.out.println("adding 16: "+tree.breadthFirstSearch());
         tree.add(new T(18));
-        System.out.println("adding 18: "+tree.breadthFirstSearch());
-        System.out.println();
-
         tree.print();
-        
+        System.out.println();
+        //System.out.println("adding 18: "+tree.breadthFirstSearch());
 
-
-        /* tree.remove(new T(14));
+        tree.remove(new T(14));
+        tree.print();
+        System.out.println();
         tree.remove(new T(16));
-        System.out.println("removing 14,16: "+tree.breadthFirstSearch());
+        tree.print();
+        System.out.println();
         tree.remove(new T(12));
-        System.out.println("removing 12: "+tree.breadthFirstSearch());
+        tree.print();
+        System.out.println();
         tree.remove(new T(18));
-        System.out.println("removing 18: "+tree.breadthFirstSearch()); */
+        //tree.print();
+        //System.out.println();
+        //System.out.println("removing 18: "+tree.breadthFirstSearch());*/
+
 
 
     }
