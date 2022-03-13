@@ -209,18 +209,14 @@ public class Scapegoat {
                     print();
                     
                     Node sg = scapegoatNode(added);
-                    if (sg.parent == null) {
-                        rebuild(sg);
+                    if (sg == root) {
+                        root = rebuild(sg);
                     }
                     else if (sg.parent.left != null && sg.parent.left.equals(sg)) {
                         sg.parent.left = rebuild(sg); 
                     }
-                    else if (sg.parent.right != null && sg.parent.right.equals(sg)){
-                        Node child = rebuild(sg);
-                        sg.parent.right = child;
-                        child = sg;
-                        
-                        //sg.parent.right = rebuild(sg);
+                    else if (sg.parent.right != null && sg.parent.right.equals(sg)) {
+                        sg.parent.right = rebuild(sg);
 
                     }
                 }
