@@ -144,6 +144,7 @@ public class Scapegoat {
         Node rebuilt = buildBalancedTree(inorder(node));
         rebuilt.parent = p;
         
+        
         // -----inserted
         MaxNodeCount = NodeCount;
 
