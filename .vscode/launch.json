@@ -6,6 +6,13 @@
     "configurations": [
         {
             "type": "java",
+            "name": "Launch BipartiteMatching",
+            "request": "launch",
+            "mainClass": "BipartiteMatching",
+            "projectName": "CS251_1ddf5428"
+        },
+        {
+            "type": "java",
             "name": "Launch SampleScapegoatTest",
             "request": "launch",
             "mainClass": "SampleScapegoatTest",
