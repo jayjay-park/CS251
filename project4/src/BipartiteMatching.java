@@ -46,6 +46,7 @@ public class BipartiteMatching {
     **/
     public void insList(int u, int []node_list)
     {		
+
         // create the graph
         // Given the input, each line is corresponding machine list, the i-th line indicates the i-th card.
         // add undirected edge from the i-th card to the corresponding machines.
