@@ -54,21 +54,35 @@ public class BipartiteMatching {
         // u is 0 based index
         int cardIndex = u + M + 1;
 
-        ArrayList<Node> machineList = new ArrayList<Node>();
-
+        System.out.printf("insert_card: %d\n", cardIndex - M);
         for (int i = 0; i < node_list.length; i++) {
-            Node temp = new Node(node_list[i]);
-            machineList.add(temp);
+            System.out.println("node_list");
+            System.out.println(node_list[i]);
         }
-        adj_list.put(cardIndex, machineList);
 
-        // DEBUG
-        /* System.out.println("*----- Adding Node -----*");
-        System.out.printf("Card Index: %d\n", cardIndex - M);
 
-        for (int i = 0; i < node_list.length; i++) {
-            System.out.printf("Machine: %d\n", node_list[i]);
-        } */
+        // for each Machine M
+        for (int m : node_list) {
+            // 1. add linked cards to Machine section
+            if (adj_list.get(m) != null) {
+                adj_list.get(m).add(new Node(cardIndex));
+            }
+            else {
+                ArrayList<Node> Cards = new ArrayList<Node>();
+                Cards.add(new Node(cardIndex));
+                adj_list.put(m, Cards);
+            }
+            // 2. add linked machines to Card section
+            if (adj_list.get(cardIndex) != null) {
+                adj_list.get(cardIndex).add(new Node(m));
+            }
+            else {
+                ArrayList<Node> Machines = new ArrayList<Node>();
+                Machines.add(new Node(m));
+                adj_list.put(cardIndex, Machines);
+            }
+        }
+
         // print hash map
         System.out.printf("CardIndex: %d\n", cardIndex - M);
         for (int j = 0; j < adj_list.get(cardIndex).size(); j++) {
@@ -97,8 +111,7 @@ public class BipartiteMatching {
 
         if (adj_list.get(v) != null) {
             for (int u = 0; u < adj_list.get(v).size(); u++) {
-                Node temp = adj_list.get(v).get(u);
-                int id = temp.node_id;
+                int id = adj_list.get(v).get(u).node_id;
                 
                 if (match[id] == -1) {
                     match[id] = v;
@@ -133,14 +146,14 @@ public class BipartiteMatching {
         int res = 0;
 
         for (int i = 1; i <= M; i++) {           
-        
             // initialize
             for (int j = 1; j <= M; j++) {
                 used[j] = false;
             } 
+            // call dfs to see if there exists any augment path
             if (match[i] == -1) {
                 if (dfs(i) == true) {
-                    res++;
+                    ++res;
                 }
             }
         }
@@ -152,7 +165,7 @@ public class BipartiteMatching {
     {
         try {
             BipartiteMatching model = new BipartiteMatching(0, 0);
-            File myObj = new File("./project4/src/sampleBipartiteTest.txt");
+            File myObj = new File("./project4/src/testFiles/bipartite_matching_testcases/9.txt");
             Scanner myReader = new Scanner(myObj);
             int line = 0;
             while (myReader.hasNextLine()) {

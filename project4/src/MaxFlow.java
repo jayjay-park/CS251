@@ -14,7 +14,9 @@ public class MaxFlow
     */
     public MaxFlow(int N)
     {
-        
+        this.N = N; // Q. is node number of drainage points?
+        this.parent = new int[N+2];   // Q. is this size correct? 
+        this.adj_list = new HashMap<Integer, ArrayList<Edge>>();
     }
 
     /** TODO
@@ -29,7 +31,20 @@ public class MaxFlow
     */
     public void insEdge(int source, int destination, int flow_rate)
     {
-        
+        System.out.printf("source: %d destination: %d flow_rate: %d\n", source, destination, flow_rate);
+        // check source in hash map
+        Edge newEdge = new Edge(source, destination, flow_rate);
+        if (adj_list.get(source) != null) {
+            adj_list.get(source).add(newEdge);
+        }
+        else {
+            ArrayList<Edge> edgeList = new ArrayList<Edge>();
+            edgeList.add(newEdge);
+            adj_list.put(source, edgeList);
+        }
+
+        // ! opposite direction of flow?
+        // ! if an edge say (v_k, v_m) is not specified in the input file, then you will add the edge from those two vertices with flow rate of 0.
     }
 
     /** TODO
