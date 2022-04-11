@@ -18,7 +18,7 @@ public class Test {
     private void loadSolutions() {
 
         try{
-            File myObj = new File("./testFiles/bipartite_matching_testcases/results.txt");
+            File myObj = new File("./project4/src/testFiles/bipartite_matching_testcases/results.txt");
             Scanner myReader = new Scanner(myObj);
             while (myReader.hasNextLine()) {
                 String data = myReader.nextLine();
@@ -30,7 +30,7 @@ public class Test {
         }
 
         try{
-            File myObj = new File("./testFiles/max_flow_testcases/results.txt");
+            File myObj = new File("./project4/src/testFiles/max_flow_testcases/results.txt");
             Scanner myReader = new Scanner(myObj);
             while (myReader.hasNextLine()) {
                 String data = myReader.nextLine();
@@ -131,7 +131,7 @@ public class Test {
 
         for (int i = 1; i <= 10; i++) {
             try{
-                if(test.testBipartiteMatching("./testFiles/bipartite_matching_testcases/"+i+".txt", test.solutions1.get(i-1))){
+                if(test.testBipartiteMatching("./project4/src/testFiles/bipartite_matching_testcases/"+i+".txt", test.solutions1.get(i-1))){
                     test.score1 += 5;
                     System.out.println("Test "+i+" passed");
                 }
@@ -148,7 +148,7 @@ public class Test {
 
         for (int i = 1; i <= 10; i++) {
             try {
-                if (test.testMaxFlow("./testFiles/max_flow_testcases/" + i + ".txt", test.solutions2.get(i - 1))) {
+                if (test.testMaxFlow("./project4/src/testFiles/max_flow_testcases/" + i + ".txt", test.solutions2.get(i - 1))) {
                     test.score2 += 5;
                     System.out.println("Test " + i + " passed");
                 } else {

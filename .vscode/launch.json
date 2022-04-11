@@ -6,6 +6,13 @@
     "configurations": [
         {
             "type": "java",
+            "name": "Launch Test",
+            "request": "launch",
+            "mainClass": "Test",
+            "projectName": "CS251_1ddf5428"
+        },
+        {
+            "type": "java",
             "name": "Launch MaxFlow",
             "request": "launch",
             "mainClass": "MaxFlow",

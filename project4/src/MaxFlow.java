@@ -75,11 +75,11 @@ public class MaxFlow
             adj_list.put(destination, edgeList);
         } */
 
-        for (int i = 0; i < adj_list.size(); i++) {
+        /*for (int i = 0; i < adj_list.size(); i++) {
             for (int j = 0; j < adj_list.get(i).size(); j++) {
                 System.out.printf("key: %d %d %d\n", i, adj_list.get(i).get(j).destination, adj_list.get(i).get(j).flow_rate);
             }
-        }
+        }*/
     }
 
     /** TODO
@@ -89,40 +89,28 @@ public class MaxFlow
     */
     boolean bfs()
     {
-        Queue<ArrayList<Edge>> q = new LinkedList<>();
+        Queue<Integer> q = new LinkedList<>();
         boolean v[] = new boolean[N+2];
         for (int i = 0; i < N+2; i++) {
             v[i] = false;
         }
 
         // add the source to queue
+        q.add(0);
         v[0] = true;
-        q.add(adj_list.get(0));
 
         while (!q.isEmpty()) {
-            // deque
-            ArrayList<Edge> node = q.remove();
+            //System.out.println(q);
+            //System.out.println("Queue");
 
-            // go to nodes adjacent nodes
-            for (int i = 0; i < N+2; i++) {
-                int flow = node.get(i).flow_rate;
-                if (flow == 0) {
-                    continue;
-                }
-                
-                // has not yet been visited
-                if ((v[i] == false) && (flow > 0)) {
-                    v[i] = true;
-                    parent[i] = node.get(i).source;
-
-                    // if next is destination node
-                    if (i == N+1) {
-                        System.out.println("True!");
+            int current = q.remove();
+            for (Edge e : adj_list.get(current)) {
+                if ((e.flow_rate > 0) && (v[e.destination] == false)) {
+                    q.add(e.destination);
+                    v[e.destination] = true;
+                    parent[e.destination] = current;
+                    if (e.destination == N+1) {
                         return true;
-                    }
-                    else {
-                        q.add(adj_list.get(i));
-                        System.out.printf("Added! %d\n", adj_list.get(i).get(0).source);
                     }
                 }
             }
@@ -145,20 +133,41 @@ public class MaxFlow
     {
         
         int maxFlow = 0;
+        int flow = Integer.MAX_VALUE;
 
-        while (bfs() == true) {
+        while (bfs()) {
+            int min = Integer.MAX_VALUE;
 
-            for (int i = 0; i < N+2; i++) {
+         for (int i = N+1; i != 0; i = parent[i]) {
+                
+                if ( min > getFlow(parent[i], i)) {
+                    min = getFlow(parent[i], i);
+                }
+                flow = min;
+            }
+            /* while (current != 0) {
+                if (min > getFlow(parent[current], current)) {
+                    current = getFlow(parent[current], current);
+                }
+                current = parent[current];
+                flow = min;
+            } */
+            
+            for (int i = N+1; i != 0; i = parent[i]) {
+                setFlow(parent[i], i, getFlow(parent[i], i)-flow);
+                setFlow(i, parent[i], getFlow(i, parent[i])+flow);
+            }
+            /*int traverse = N+1;
+            while (traverse != 0) {
+                setFlow(parent[traverse], traverse, getFlow(parent[], destination));
+            } */
+            
+            /* for (int i = 0; i < N+2; i++) {
                 System.out.printf("%d ", parent[i]);
             }
-            System.out.println();
-
-            // get Flow
-            int flow = getFlow(0, N+1);
-            // update maxFlow
+            System.out.println(); */
             maxFlow += flow;
-            // set Flow 
-            setFlow(0, N+1, flow);
+            Arrays.fill(parent, -1);
 
         }
         return maxFlow;
@@ -174,14 +183,16 @@ public class MaxFlow
     */
     int getFlow(int source, int destination)
     {
-        int flow = 0;
-        for (int i = destination; i != source; i = parent[i]) {
+        return adj_list.get(source).get(destination).flow_rate;
+        /* for (int i = destination; i != source; i = parent[i]) {
             int prev = parent[i];
             int capacity = adj_list.get(prev).get(i).flow_rate;
             if (capacity < flow) {
                 flow = capacity;
             }
-        }
+        } */
+
+
         /*int flow = 0;
         int start = source;
         int next = -1;
@@ -196,7 +207,6 @@ public class MaxFlow
                 return flow;
             }
         }*/
-        return flow;
     }
 
     /** TODO
@@ -211,11 +221,16 @@ public class MaxFlow
        // find bottle neck -> given flow_rate
        // capacity - bottle neck to original graph
        // + bottle neck to reverse graph
-       for (int i = destination; i != source; i = parent[i]) {
+       
+       /* for (int i = destination; i != source; i = parent[i]) {
             int prev = parent[i];
             adj_list.get(prev).get(i).flow_rate -= flow_rate;
             adj_list.get(i).get(prev).flow_rate += flow_rate;
-       }
+       } */
+       //System.out.println("set flow");
+       //System.out.println(adj_list.get(source).get(destination).flow_rate);
+       adj_list.get(source).get(destination).flow_rate = flow_rate;
+       //System.out.println(adj_list.get(source).get(destination).flow_rate);
 
     }
 

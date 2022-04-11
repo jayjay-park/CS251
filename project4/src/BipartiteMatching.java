@@ -55,11 +55,11 @@ public class BipartiteMatching {
         // u is 0 based index
         int cardIndex = u + M + 1;
 
-        System.out.printf("insert_card: %d\n", cardIndex - M);
-        for (int i = 0; i < node_list.length; i++) {
+        //System.out.printf("insert_card: %d\n", cardIndex - M);
+        /*for (int i = 0; i < node_list.length; i++) {
             System.out.println("node_list");
             System.out.println(node_list[i]);
-        }
+        }*/
 
 
         // for each Machine M
@@ -85,11 +85,11 @@ public class BipartiteMatching {
         }
 
         // print hash map
-        System.out.printf("CardIndex: %d\n", cardIndex - M);
-        for (int j = 0; j < adj_list.get(cardIndex).size(); j++) {
+        //System.out.printf("CardIndex: %d\n", cardIndex - M);
+        /*for (int j = 0; j < adj_list.get(cardIndex).size(); j++) {
             System.out.printf("M: %d\n", adj_list.get(cardIndex).get(j).node_id);
         }
-        System.out.println();
+        System.out.println();*/
        
     }
 
