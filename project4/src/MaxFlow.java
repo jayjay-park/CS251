@@ -104,14 +104,12 @@ public class MaxFlow
             ArrayList<Edge> node = q.remove();
 
             // go to nodes adjacent nodes
-            
             for (int i = 0; i < N+2; i++) {
                 int flow = node.get(i).flow_rate;
                 if (flow == 0) {
                     continue;
                 }
                 
-
                 // has not yet been visited
                 if ((v[i] == false) && (flow > 0)) {
                     v[i] = true;
@@ -129,7 +127,6 @@ public class MaxFlow
                 }
             }
         }
-
         return false;
     }
 
