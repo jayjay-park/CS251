@@ -120,6 +120,7 @@ public class Main_pattern {
             i = 0;
             SE = "";
             while (tempJ < length) {
+                System.out.printf("i: %d j: %d\n", i, tempJ);
                 SE += crossword[i][tempJ];
                 i++;
                 tempJ++;
@@ -133,6 +134,7 @@ public class Main_pattern {
             //i++;
             tempJ = 0;
             while ((i < length) && (tempJ < length)) {
+                System.out.printf("i*: %d j*: %d\n", i, tempJ);
                 SE += crossword[i][tempJ];
                 i++;
                 tempJ++;
@@ -143,12 +145,17 @@ public class Main_pattern {
                 System.out.println("Circular_1");
                 return new int[] {startSE, length - j -1, 1};
             }
-            /*String concatSE = SE.concat(SE);
+            String concatSE = SE.concat(SE);
             int testSE = kmp.find(concatSE, target);
             if (testSE != -1) {
                 System.out.println("Circular!");
-                return new int[] {startSE, j, 1};
-            }*/
+                if (j + testSE < length) {
+                    return new int[] {testSE, j + testSE, 1};
+                }
+                else {
+                    return new int[] {testSE, j + testSE - length - 1, 1};
+                }
+            }
             
         }
 
@@ -337,7 +344,7 @@ public class Main_pattern {
             i = 0;
             SW = "";
             while ((i < length) && (tempJ >= 0)) {
-                //System.out.printf("i: %d j: %d\n", tempI, j);
+                System.out.printf("i: %d j: %d\n", i, tempJ);
                 SW += crossword[i][tempJ];
                 i++;
                 tempJ--;
@@ -345,23 +352,39 @@ public class Main_pattern {
 
             int startSW = kmp.find(SW, target);
             if (startSW != -1) {
-                return new int[] {startSW, length - j - 1, 7};
+                return new int[] {startSW, j - startSW, 7};
             }
 
+            System.out.println(SW);
             //i++;
             tempJ = length-1;
 
             while ((i < length) && (tempJ >= 0)) {
                 SW += crossword[i][tempJ];
-                //System.out.printf("i*: %d j*: %d\n", tempI, j);
+                System.out.printf("i*: %d j*: %d\n", i, tempJ);
                 i++;
                 tempJ--;
             }
+
             System.out.println(SW);
+            
             startSW = kmp.find(SW, target);
             if (startSW != -1) {
                 System.out.println("Circular");
-                return new int[] {startSW, length - j - 1, 7};
+                return new int[] {startSW, length - (startSW-j), 7};
+            }
+
+            String concatSW = SW.concat(SW);
+            int testSW = kmp.find(concatSW, target);
+            if (testSW != -1) {
+                System.out.println("Circular!");
+                //return new int[] {testSW, length - (testSW - j), 7};
+                if (j - testSW >= 0) {
+                    return new int[] {testSW, j - testSW, 7};
+                }
+                else {
+                    return new int[] {testSW, length - (testSW - j), 7};
+                }
             }
         }
 
